@@ -1,5 +1,138 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
+const DISCLAIMER_KEY = "n4x4_disclaimer_v1";
+
+function Disclaimer({ onAccept }) {
+  const [checked, setChecked] = useState(false);
+
+  return (
+    <>
+      <style>{`
+        @keyframes disclaimerUp {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 200,
+        background: "#060c12",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "24px 22px",
+      }}>
+        <div style={{
+          maxWidth: 440, width: "100%",
+          animation: "disclaimerUp 0.5s ease both",
+        }}>
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.9 }}>
+              <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.759 3.872 2 6.5 2c1.972 0 3.963 1.073 5.5 3.093C13.537 3.073 15.528 2 17.5 2 20.128 2 23 3.76 23 7.191c0 4.105-5.37 8.863-11 14.402z"
+                fill="#ef4444" opacity="0.85"/>
+            </svg>
+          </div>
+
+          <div style={{
+            fontSize: 10, fontFamily: "'DM Mono', monospace",
+            color: "rgba(255,255,255,0.45)", letterSpacing: 3.5,
+            textAlign: "center", marginBottom: 8,
+          }}>
+            HEALTH & SAFETY
+          </div>
+          <div style={{
+            fontSize: 22, fontWeight: 800, color: "#fff",
+            letterSpacing: -0.5, textAlign: "center", marginBottom: 24,
+          }}>
+            Cardiac Disclosure
+          </div>
+
+          <div style={{
+            background: "rgba(255,255,255,0.028)",
+            border: "1px solid rgba(255,255,255,0.075)",
+            borderRadius: 16, padding: "20px 22px",
+            marginBottom: 20,
+            overflowY: "auto", maxHeight: "45vh",
+          }}>
+            {[
+              "Norwegian 4×4 interval training is a high-intensity cardiovascular protocol that raises your heart rate to 90–95% of maximum. It places significant stress on the heart and cardiovascular system.",
+              "This app is a timer only. It does not monitor your health, detect cardiac events, or provide medical advice. It is not a substitute for professional medical guidance.",
+              "Before starting this or any high-intensity exercise program, consult a qualified physician — especially if you have a history of heart disease, high blood pressure, arrhythmia, chest pain, shortness of breath, or any other cardiovascular condition.",
+              "Stop exercising immediately and seek emergency medical attention if you experience chest pain, irregular heartbeat, severe shortness of breath, dizziness, or fainting.",
+              "By continuing, you confirm that you have read this disclosure, understand the risks involved, and accept sole responsibility for your participation.",
+            ].map((text, i) => (
+              <p key={i} style={{
+                fontSize: 12, lineHeight: 1.7,
+                color: "rgba(255,255,255,0.65)",
+                fontFamily: "system-ui, sans-serif",
+                marginBottom: i < 4 ? 14 : 0,
+              }}>
+                {text}
+              </p>
+            ))}
+          </div>
+
+          <label style={{
+            display: "flex", alignItems: "flex-start", gap: 12,
+            cursor: "pointer", marginBottom: 20, userSelect: "none",
+          }}>
+            <div
+              onClick={() => setChecked(c => !c)}
+              style={{
+                width: 20, height: 20, borderRadius: 5, flexShrink: 0, marginTop: 1,
+                background: checked ? "#ef4444" : "transparent",
+                border: `1.5px solid ${checked ? "#ef4444" : "rgba(255,255,255,0.25)"}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                transition: "all 0.2s ease",
+              }}
+            >
+              {checked && (
+                <svg width="11" height="11" viewBox="0 0 11 11">
+                  <polyline points="1.5,5.5 4,8 9.5,2" fill="none" stroke="#fff"
+                    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </div>
+            <span style={{
+              fontSize: 12, lineHeight: 1.6,
+              color: "rgba(255,255,255,0.7)",
+              fontFamily: "system-ui, sans-serif",
+            }}>
+              I have read and understood the cardiac disclosure above. I confirm I am physically capable of high-intensity exercise and accept full responsibility for my participation.
+            </span>
+          </label>
+
+          <button
+            onClick={() => { if (checked) onAccept(); }}
+            disabled={!checked}
+            style={{
+              width: "100%", height: 56,
+              background: checked
+                ? "linear-gradient(140deg, #dc2626, #ef4444)"
+                : "rgba(255,255,255,0.04)",
+              border: checked ? "none" : "1.5px solid rgba(255,255,255,0.07)",
+              borderRadius: 14,
+              color: checked ? "#fff" : "rgba(255,255,255,0.25)",
+              fontFamily: "'Syne', sans-serif", fontWeight: 700,
+              fontSize: 13, letterSpacing: 2.5,
+              cursor: checked ? "pointer" : "not-allowed",
+              transition: "all 0.3s ease",
+              boxShadow: checked ? "0 6px 24px rgba(239,68,68,0.3)" : "none",
+            }}
+          >
+            I UNDERSTAND — CONTINUE
+          </button>
+
+          <p style={{
+            textAlign: "center", marginTop: 14,
+            fontSize: 10, fontFamily: "'DM Mono', monospace",
+            color: "rgba(255,255,255,0.25)", letterSpacing: 1.5,
+          }}>
+            YOUR ACCEPTANCE IS RECORDED LOCALLY ON THIS DEVICE
+          </p>
+        </div>
+      </div>
+    </>
+  );
+}
+
 const MAX_OSCILLATORS = 4;
 
 const PHASES = [
@@ -103,11 +236,21 @@ export default function App() {
   const [done, setDone] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(
+    () => localStorage.getItem(DISCLAIMER_KEY) === "1"
+  );
   const intervalRef = useRef(null);
   const audioCtx = useRef(null);
   const activeOscillators = useRef(0);
 
   useEffect(() => { setTimeout(() => setMounted(true), 80); }, []);
+
+  const acceptDisclaimer = () => {
+    localStorage.setItem(DISCLAIMER_KEY, "1");
+    setDisclaimerAccepted(true);
+  };
+
+  if (!disclaimerAccepted) return <Disclaimer onAccept={acceptDisclaimer} />;
 
   const phase = PHASES[phaseIdx];
   const phaseRemaining = phase.duration - phaseElapsed;
