@@ -34,12 +34,10 @@ steps:
       - '--cpu-boost'
       - '--startup-cpu-boost'
 
-# Build configuration
 options:
   logging: CLOUD_LOGGING_ONLY
   machineType: 'E2_HIGHCPU_8'
   
-# Cloud Run service configuration
 substitutions:
   _SERVICE_NAME: 'b4usign-warranty-marketplace'
   _REGION: 'us-central1'
