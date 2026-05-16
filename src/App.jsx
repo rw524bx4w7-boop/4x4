@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
+const MAX_OSCILLATORS = 4;
+
 const PHASES = [
   { id: "warmup",    label: "Warm-Up",    short: "WU", duration: 600, type: "rest",     color: "#4FC3F7", accent: "#0ea5e9", targetHR: "60–70%" },
   { id: "interval1", label: "Interval 1", short: "I1", duration: 240, type: "work",     color: "#ff6b35", accent: "#ef4444", targetHR: "90–95%" },
@@ -103,6 +105,7 @@ export default function App() {
   const [mounted, setMounted] = useState(false);
   const intervalRef = useRef(null);
   const audioCtx = useRef(null);
+  const activeOscillators = useRef(0);
 
   useEffect(() => { setTimeout(() => setMounted(true), 80); }, []);
 
@@ -115,6 +118,7 @@ export default function App() {
   const isCountdown = phaseRemaining <= 3 && running && phaseRemaining > 0;
 
   const beep = useCallback((freq = 880, dur = 0.12, vol = 0.25) => {
+    if (activeOscillators.current >= MAX_OSCILLATORS) return;
     try {
       if (!audioCtx.current) audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
       const ctx = audioCtx.current;
@@ -124,6 +128,8 @@ export default function App() {
       osc.frequency.value = freq; osc.type = "sine";
       gain.gain.setValueAtTime(vol, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+      activeOscillators.current++;
+      osc.onended = () => { activeOscillators.current--; };
       osc.start(); osc.stop(ctx.currentTime + dur);
     } catch {}
   }, []);
@@ -181,7 +187,6 @@ export default function App() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { height: 100%; background: #060c12; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
