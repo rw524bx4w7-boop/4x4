@@ -1,0 +1,19 @@
+{
+  "name": "b4usign-llm-router",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server/llm-router.js",
+    "dev": "node --watch server/llm-router.js",
+    "health": "curl http://localhost:3001/health"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "undici": "^6.19.8"
+  },
+  "description": "Multi-provider LLM router for B4uSign F&I AI services",
+  "keywords": ["llm", "ai", "f&i", "warranty", "router"],
+  "author": "B4uSign",
+  "license": "MIT"
+}
