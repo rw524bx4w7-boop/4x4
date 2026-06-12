@@ -288,9 +288,14 @@ function BodyBatteryGate({ onContinue }) {
         overflowY: "auto",
         display: "flex", flexDirection: "column",
         alignItems: "center",
-        padding: "32px 28px 24px",
       }}>
-        <div style={{ flex: 1 }} />
+        <div style={{
+          margin: "auto",
+          width: "100%", maxWidth: 380,
+          display: "flex", flexDirection: "column",
+          alignItems: "center",
+          padding: "32px 28px 32px",
+        }}>
         {/* Eyebrow */}
         <div style={{
           fontSize: 10, fontFamily: "'DM Mono', monospace",
@@ -359,7 +364,7 @@ function BodyBatteryGate({ onContinue }) {
 
         {/* Tier legend */}
         <div style={{
-          width: "100%", maxWidth: 320,
+          width: "100%",
           display: "flex", flexDirection: "column", gap: 6,
           marginBottom: 20, opacity: 0,
           animation: "bb-up 0.7s ease 0.35s forwards",
@@ -413,7 +418,7 @@ function BodyBatteryGate({ onContinue }) {
 
         {/* CTA */}
         <div style={{
-          width: "100%", maxWidth: 320, opacity: 0,
+          width: "100%", opacity: 0,
           animation: "bb-up 0.7s ease 0.5s forwards",
         }}>
           <button
@@ -454,7 +459,7 @@ function BodyBatteryGate({ onContinue }) {
             </button>
           )}
         </div>
-        <div style={{ flex: 1 }} />
+        </div>
       </div>
     </>
   );
