@@ -6,42 +6,84 @@ function QuoteSplash({ onContinue }) {
   return (
     <>
       <style>{`
-        @keyframes flashRed {
-          0%, 100% { opacity: 1; text-shadow: 0 0 48px rgba(239,68,68,0.9); }
-          50% { opacity: 0.2; text-shadow: 0 0 8px rgba(239,68,68,0.1); }
+        @keyframes qs-up {
+          from { opacity: 0; transform: translateY(22px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes qs-breathe {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.5; }
         }
       `}</style>
-      <div
-        onClick={onContinue}
-        style={{
-          position: "fixed", inset: 0, zIndex: 300,
-          background: "#060c12",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          padding: "32px 28px",
-          cursor: "pointer",
-        }}
-      >
-        <div style={{ maxWidth: 400, textAlign: "center" }}>
-          <div style={{
-            fontSize: 26,
-            fontWeight: 800,
-            color: "#ef4444",
-            lineHeight: 1.35,
-            letterSpacing: -0.5,
-            animation: "flashRed 1.1s ease-in-out infinite",
-            fontFamily: "'Syne', sans-serif",
-          }}>
-            Invest in your strength today, so your family doesn't have to finance your weakness in the future.
-          </div>
-          <div style={{
-            marginTop: 44,
-            fontSize: 10,
-            fontFamily: "'DM Mono', monospace",
-            color: "rgba(255,255,255,0.3)",
-            letterSpacing: 3.5,
-          }}>
-            TAP TO CONTINUE
-          </div>
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 300,
+        background: "#000",
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        padding: "56px 32px 48px",
+      }}>
+
+        {/* Eyebrow */}
+        <div style={{
+          fontSize: 10, fontFamily: "'DM Mono', monospace",
+          color: "rgba(255,255,255,0.28)", letterSpacing: 4.5,
+          marginBottom: 28,
+          opacity: 0,
+          animation: "qs-up 0.7s ease 0.1s forwards",
+        }}>
+          BEFORE YOU BEGIN
+        </div>
+
+        {/* Quote */}
+        <div style={{
+          maxWidth: 360, textAlign: "center",
+          fontSize: 27, fontWeight: 800,
+          color: "#ef4444",
+          lineHeight: 1.28, letterSpacing: -0.6,
+          fontFamily: "'Syne', sans-serif",
+          opacity: 0,
+          animation: "qs-up 0.8s ease 0.35s forwards, qs-breathe 3.2s ease-in-out 1.4s infinite",
+        }}>
+          Invest in your strength today, so your family doesn't have to finance your weakness in the future.
+        </div>
+
+        {/* Rule */}
+        <div style={{
+          width: 36, height: 1,
+          background: "rgba(255,255,255,0.1)",
+          margin: "36px 0",
+          opacity: 0,
+          animation: "qs-up 0.6s ease 0.7s forwards",
+        }} />
+
+        {/* Execute CTA */}
+        <button
+          onClick={onContinue}
+          style={{
+            width: "100%", maxWidth: 360, height: 62,
+            background: "#ef4444",
+            border: "none", borderRadius: 16,
+            color: "#fff",
+            fontFamily: "'Syne', sans-serif", fontWeight: 800,
+            fontSize: 14, letterSpacing: 4.5,
+            cursor: "pointer",
+            boxShadow: "0 12px 40px rgba(239,68,68,0.38)",
+            opacity: 0,
+            animation: "qs-up 0.7s ease 0.9s forwards",
+          }}
+        >
+          EXECUTE
+        </button>
+
+        {/* Sub-label */}
+        <div style={{
+          marginTop: 16,
+          fontSize: 10, fontFamily: "'DM Mono', monospace",
+          color: "rgba(255,255,255,0.18)", letterSpacing: 2.5,
+          opacity: 0,
+          animation: "qs-up 0.6s ease 1.1s forwards",
+        }}>
+          Norwegian 4×4 · 42 minutes
         </div>
       </div>
     </>
