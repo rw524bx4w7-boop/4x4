@@ -4,13 +4,21 @@ const DISCLAIMER_KEY = "n4x4_disclaimer_v1";
 
 // Apple dark-mode system palette — semantic, high-contrast, research-backed
 const C = {
-  red:        "#ff375f",  // max effort / urgency
+  red:        "#ff375f",
   redDeep:    "#c0001c",
-  green:      "#32d74b",  // recovery / biological
+  green:      "#32d74b",
   greenDeep:  "#1a8a28",
-  blue:       "#0a84ff",  // controlled / steady-state
+  blue:       "#0a84ff",
   blueDeep:   "#0055c8",
+  yellow:     "#ffd60a",
+  yellowDeep: "#b38600",
 };
+
+function getBattStatus(v) {
+  if (v >= 75) return { grade: "green",  label: "CRUSH IT",          sub: "Energy reserves optimal. Push to your limit.",   color: C.green,  cta: "CRUSH IT",          go: true  };
+  if (v >= 40) return { grade: "yellow", label: "PROCEED WITH CARE", sub: "Moderate reserves. Dial back intensity if needed.", color: C.yellow, cta: "START WITH CARE",    go: true  };
+  return         { grade: "red",    label: "NO GO",              sub: "Insufficient reserves. Rest or easy movement only.", color: C.red,    cta: "REST TODAY",         go: false };
+}
 
 function QuoteSplash({ onContinue }) {
   const [firing, setFiring] = useState(false);
@@ -246,6 +254,209 @@ function Disclaimer({ onAccept }) {
   );
 }
 
+function BodyBatteryGate({ onContinue }) {
+  const [value, setValue] = useState(50);
+  const [confirmed, setConfirmed] = useState(false);
+
+  const status = getBattStatus(value);
+
+  const handleCta = () => {
+    if (status.go) { onContinue(value); return; }
+    setConfirmed(true); // show override option for red
+  };
+
+  const TIERS = [
+    { range: "75 – 100", ...getBattStatus(75) },
+    { range: "40 – 74",  ...getBattStatus(50) },
+    { range: "0 – 39",   ...getBattStatus(20) },
+  ];
+
+  return (
+    <>
+      <style>{`
+        @keyframes bb-up {
+          from { opacity: 0; transform: translateY(18px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+        input[type=number] { -moz-appearance: textfield; }
+      `}</style>
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 300,
+        background: "#000",
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        padding: "48px 32px",
+      }}>
+        {/* Eyebrow */}
+        <div style={{
+          fontSize: 10, fontFamily: "'DM Mono', monospace",
+          color: "rgba(255,255,255,0.28)", letterSpacing: 4.5,
+          marginBottom: 20, opacity: 0,
+          animation: "bb-up 0.6s ease 0.05s forwards",
+        }}>
+          PRE-WORKOUT CHECK
+        </div>
+
+        {/* Title */}
+        <div style={{
+          fontSize: 28, fontWeight: 800, color: "#fff",
+          letterSpacing: -0.8, textAlign: "center", lineHeight: 1.1,
+          marginBottom: 32, opacity: 0,
+          animation: "bb-up 0.6s ease 0.15s forwards",
+        }}>
+          Body Battery
+        </div>
+
+        {/* Stepper */}
+        <div style={{
+          display: "flex", alignItems: "center", gap: 20,
+          marginBottom: 32, opacity: 0,
+          animation: "bb-up 0.7s ease 0.25s forwards",
+        }}>
+          <button
+            onClick={() => setValue(v => Math.max(0, v - 1))}
+            style={{
+              width: 48, height: 48, borderRadius: "50%",
+              background: "rgba(255,255,255,0.07)",
+              border: "1.5px solid rgba(255,255,255,0.12)",
+              color: "#fff", fontSize: 22, fontWeight: 300,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >−</button>
+
+          <input
+            type="number" min="0" max="100"
+            value={value}
+            onChange={e => {
+              const n = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
+              setValue(n);
+            }}
+            style={{
+              width: 96, textAlign: "center",
+              fontSize: 56, fontWeight: 800,
+              color: status.color,
+              fontFamily: "'Syne', sans-serif",
+              background: "transparent", border: "none", outline: "none",
+              transition: "color 0.3s ease",
+            }}
+          />
+
+          <button
+            onClick={() => setValue(v => Math.min(100, v + 1))}
+            style={{
+              width: 48, height: 48, borderRadius: "50%",
+              background: "rgba(255,255,255,0.07)",
+              border: "1.5px solid rgba(255,255,255,0.12)",
+              color: "#fff", fontSize: 22, fontWeight: 300,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >+</button>
+        </div>
+
+        {/* Tier legend */}
+        <div style={{
+          width: "100%", maxWidth: 320,
+          display: "flex", flexDirection: "column", gap: 8,
+          marginBottom: 28, opacity: 0,
+          animation: "bb-up 0.7s ease 0.35s forwards",
+        }}>
+          {TIERS.map(t => {
+            const active = status.grade === t.grade;
+            return (
+              <div key={t.grade} style={{
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "12px 16px", borderRadius: 12,
+                background: active ? `${t.color}18` : "rgba(255,255,255,0.03)",
+                border: `1.5px solid ${active ? `${t.color}55` : "rgba(255,255,255,0.06)"}`,
+                transition: "all 0.3s ease",
+              }}>
+                <div style={{
+                  width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
+                  background: t.color,
+                  boxShadow: active ? `0 0 10px ${t.color}99` : "none",
+                  transition: "box-shadow 0.3s ease",
+                }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontSize: 11, fontWeight: 700,
+                    fontFamily: "'Syne', sans-serif",
+                    color: active ? t.color : "rgba(255,255,255,0.45)",
+                    letterSpacing: 1.5,
+                    transition: "color 0.3s ease",
+                  }}>
+                    {t.label}
+                  </div>
+                  {active && (
+                    <div style={{
+                      fontSize: 10, fontFamily: "'DM Mono', monospace",
+                      color: "rgba(255,255,255,0.5)", marginTop: 2,
+                    }}>
+                      {t.sub}
+                    </div>
+                  )}
+                </div>
+                <div style={{
+                  fontSize: 9, fontFamily: "'DM Mono', monospace",
+                  color: active ? t.color : "rgba(255,255,255,0.25)",
+                  letterSpacing: 1,
+                }}>
+                  {t.range}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* CTA */}
+        <div style={{
+          width: "100%", maxWidth: 320, opacity: 0,
+          animation: "bb-up 0.7s ease 0.5s forwards",
+        }}>
+          <button
+            onClick={handleCta}
+            style={{
+              width: "100%", height: 60,
+              background: status.go
+                ? `linear-gradient(140deg, ${status.grade === "green" ? C.greenDeep : C.yellowDeep}, ${status.color})`
+                : `linear-gradient(140deg, ${C.redDeep}, ${C.red})`,
+              border: "none", borderRadius: 16,
+              color: status.grade === "yellow" ? "#000" : "#fff",
+              fontFamily: "'Syne', sans-serif", fontWeight: 800,
+              fontSize: 13, letterSpacing: 3.5,
+              cursor: "pointer",
+              boxShadow: `0 10px 36px ${status.color}50`,
+              transition: "all 0.3s ease",
+            }}
+          >
+            {status.cta}
+          </button>
+
+          {/* Red override */}
+          {status.grade === "red" && confirmed && (
+            <button
+              onClick={() => onContinue(value)}
+              style={{
+                width: "100%", marginTop: 12, height: 44,
+                background: "transparent",
+                border: "1.5px solid rgba(255,255,255,0.1)",
+                borderRadius: 12,
+                color: "rgba(255,255,255,0.35)",
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 10, letterSpacing: 2.5,
+                cursor: "pointer",
+              }}
+            >
+              OVERRIDE — PROCEED ANYWAY
+            </button>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
 const MAX_OSCILLATORS = 4;
 
 const PHASES = [
@@ -362,6 +573,7 @@ export default function App() {
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(
     () => localStorage.getItem(DISCLAIMER_KEY) === "1"
   );
+  const [bodyBattery, setBodyBattery] = useState(null);
 
   const intervalRef = useRef(null);
   const audioCtx = useRef(null);
@@ -481,6 +693,7 @@ export default function App() {
 
   if (showQuote) return <QuoteSplash onContinue={() => setShowQuote(false)} />;
   if (!disclaimerAccepted) return <Disclaimer onAccept={acceptDisclaimer} />;
+  if (bodyBattery === null) return <BodyBatteryGate onContinue={setBodyBattery} />;
 
   const phase = PHASES[phaseIdx];
   const phaseRemaining = phase.duration - phaseElapsed;
@@ -779,28 +992,32 @@ export default function App() {
           gap: 8, width: "100%", marginTop: 20,
           animation: "fadeUp 0.55s ease both", animationDelay: "0.55s"
         }}>
-          {[
-            { label: "WORK", value: `${completedWork}/4`, sub: "intervals" },
-            { label: "ELAPSED", value: fmt(totalElapsed), sub: `of ${fmt(TOTAL)}` },
-            { label: "BODY BATT", value: "31", sub: "pre-ride" },
-          ].map(s => (
-            <div key={s.label} style={{
-              background: "rgba(255,255,255,0.028)",
-              border: "1px solid rgba(255,255,255,0.055)",
-              borderRadius: 14, padding: "14px 10px",
-              textAlign: "center",
-            }}>
-              <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.45)", letterSpacing: 2, marginBottom: 7 }}>
-                {s.label}
+          {(() => {
+            const batt = getBattStatus(bodyBattery);
+            return [
+              { label: "WORK",      value: `${completedWork}/4`,   sub: "intervals",             color: null },
+              { label: "ELAPSED",   value: fmt(totalElapsed),       sub: `of ${fmt(TOTAL)}`,      color: null },
+              { label: "BODY BATT", value: String(bodyBattery),     sub: batt.label,              color: batt.color },
+            ].map(s => (
+              <div key={s.label} style={{
+                background: s.color ? `${s.color}10` : "rgba(255,255,255,0.028)",
+                border: `1px solid ${s.color ? `${s.color}35` : "rgba(255,255,255,0.055)"}`,
+                borderRadius: 14, padding: "14px 10px",
+                textAlign: "center",
+                transition: "all 0.4s ease",
+              }}>
+                <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.45)", letterSpacing: 2, marginBottom: 7 }}>
+                  {s.label}
+                </div>
+                <div style={{ fontSize: 19, fontWeight: 700, color: s.color || "rgba(255,255,255,0.92)", letterSpacing: -0.5, lineHeight: 1, transition: "color 0.3s ease" }}>
+                  {s.value}
+                </div>
+                <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: s.color ? `${s.color}cc` : "rgba(255,255,255,0.38)", letterSpacing: 1, marginTop: 5, transition: "color 0.3s ease" }}>
+                  {s.sub}
+                </div>
               </div>
-              <div style={{ fontSize: 19, fontWeight: 700, color: "rgba(255,255,255,0.92)", letterSpacing: -0.5, lineHeight: 1 }}>
-                {s.value}
-              </div>
-              <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.38)", letterSpacing: 1, marginTop: 5 }}>
-                {s.sub}
-              </div>
-            </div>
-          ))}
+            ));
+          })()}
         </div>
 
         {!done && PHASES[phaseIdx + 1] && (
