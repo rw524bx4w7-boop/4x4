@@ -2,6 +2,16 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 const DISCLAIMER_KEY = "n4x4_disclaimer_v1";
 
+// Apple dark-mode system palette — semantic, high-contrast, research-backed
+const C = {
+  red:        "#ff375f",  // max effort / urgency
+  redDeep:    "#c0001c",
+  green:      "#32d74b",  // recovery / biological
+  greenDeep:  "#1a8a28",
+  blue:       "#0a84ff",  // controlled / steady-state
+  blueDeep:   "#0055c8",
+};
+
 function QuoteSplash({ onContinue }) {
   const [firing, setFiring] = useState(false);
 
@@ -20,7 +30,7 @@ function QuoteSplash({ onContinue }) {
         }
         @keyframes qs-breathe {
           0%, 100% { opacity: 1; }
-          50%       { opacity: 0.5; }
+          50%       { opacity: 0.45; }
         }
         @keyframes qs-flash {
           0%   { opacity: 0; }
@@ -29,11 +39,10 @@ function QuoteSplash({ onContinue }) {
         }
       `}</style>
 
-      {/* Full-screen execute flash */}
       {firing && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 400,
-          background: "#ef4444",
+          background: C.red,
           animation: "qs-flash 0.42s ease forwards",
           pointerEvents: "none",
         }} />
@@ -46,23 +55,19 @@ function QuoteSplash({ onContinue }) {
         alignItems: "center", justifyContent: "center",
         padding: "56px 32px 48px",
       }}>
-
-        {/* Eyebrow */}
         <div style={{
           fontSize: 10, fontFamily: "'DM Mono', monospace",
           color: "rgba(255,255,255,0.28)", letterSpacing: 4.5,
-          marginBottom: 28,
-          opacity: 0,
+          marginBottom: 28, opacity: 0,
           animation: "qs-up 0.7s ease 0.1s forwards",
         }}>
           BEFORE YOU BEGIN
         </div>
 
-        {/* Quote */}
         <div style={{
           maxWidth: 360, textAlign: "center",
           fontSize: 27, fontWeight: 800,
-          color: "#ef4444",
+          color: C.red,
           lineHeight: 1.28, letterSpacing: -0.6,
           fontFamily: "'Syne', sans-serif",
           opacity: 0,
@@ -71,27 +76,24 @@ function QuoteSplash({ onContinue }) {
           Invest in your strength today, so your family doesn't have to finance your weakness in the future.
         </div>
 
-        {/* Rule */}
         <div style={{
           width: 36, height: 1,
           background: "rgba(255,255,255,0.1)",
-          margin: "36px 0",
-          opacity: 0,
+          margin: "36px 0", opacity: 0,
           animation: "qs-up 0.6s ease 0.7s forwards",
         }} />
 
-        {/* Execute CTA */}
         <button
           onClick={execute}
           style={{
             width: "100%", maxWidth: 360, height: 62,
-            background: firing ? "#c0392b" : "#ef4444",
+            background: firing ? C.redDeep : C.red,
             border: "none", borderRadius: 16,
             color: "#fff",
             fontFamily: "'Syne', sans-serif", fontWeight: 800,
             fontSize: 14, letterSpacing: 4.5,
             cursor: "pointer",
-            boxShadow: "0 12px 40px rgba(239,68,68,0.38)",
+            boxShadow: `0 12px 40px ${C.red}60`,
             opacity: 0,
             animation: "qs-up 0.7s ease 0.9s forwards",
             transition: "background 0.1s ease",
@@ -100,7 +102,6 @@ function QuoteSplash({ onContinue }) {
           EXECUTE
         </button>
 
-        {/* Sub-label */}
         <div style={{
           marginTop: 16,
           fontSize: 10, fontFamily: "'DM Mono', monospace",
@@ -139,7 +140,7 @@ function Disclaimer({ onAccept }) {
           <div style={{ textAlign: "center", marginBottom: 24 }}>
             <svg width="44" height="44" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.9 }}>
               <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.759 3.872 2 6.5 2c1.972 0 3.963 1.073 5.5 3.093C13.537 3.073 15.528 2 17.5 2 20.128 2 23 3.76 23 7.191c0 4.105-5.37 8.863-11 14.402z"
-                fill="#ef4444" opacity="0.85"/>
+                fill={C.red} opacity="0.85"/>
             </svg>
           </div>
 
@@ -189,8 +190,8 @@ function Disclaimer({ onAccept }) {
               onClick={() => setChecked(c => !c)}
               style={{
                 width: 20, height: 20, borderRadius: 5, flexShrink: 0, marginTop: 1,
-                background: checked ? "#ef4444" : "transparent",
-                border: `1.5px solid ${checked ? "#ef4444" : "rgba(255,255,255,0.25)"}`,
+                background: checked ? C.red : "transparent",
+                border: `1.5px solid ${checked ? C.red : "rgba(255,255,255,0.25)"}`,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 transition: "all 0.2s ease",
               }}
@@ -217,7 +218,7 @@ function Disclaimer({ onAccept }) {
             style={{
               width: "100%", height: 56,
               background: checked
-                ? "linear-gradient(140deg, #dc2626, #ef4444)"
+                ? `linear-gradient(140deg, ${C.redDeep}, ${C.red})`
                 : "rgba(255,255,255,0.04)",
               border: checked ? "none" : "1.5px solid rgba(255,255,255,0.07)",
               borderRadius: 14,
@@ -226,7 +227,7 @@ function Disclaimer({ onAccept }) {
               fontSize: 13, letterSpacing: 2.5,
               cursor: checked ? "pointer" : "not-allowed",
               transition: "all 0.3s ease",
-              boxShadow: checked ? "0 6px 24px rgba(239,68,68,0.3)" : "none",
+              boxShadow: checked ? `0 6px 24px ${C.red}48` : "none",
             }}
           >
             I UNDERSTAND — CONTINUE
@@ -248,15 +249,15 @@ function Disclaimer({ onAccept }) {
 const MAX_OSCILLATORS = 4;
 
 const PHASES = [
-  { id: "warmup",    label: "Warm-Up",    short: "WU", duration: 600, type: "rest",     color: "#4FC3F7", accent: "#0ea5e9", targetHR: "60–70%" },
-  { id: "interval1", label: "Interval 1", short: "I1", duration: 240, type: "work",     color: "#ff6b35", accent: "#ef4444", targetHR: "90–95%" },
-  { id: "recovery1", label: "Recovery",   short: "R1", duration: 180, type: "recovery", color: "#34d399", accent: "#10b981", targetHR: "~70%" },
-  { id: "interval2", label: "Interval 2", short: "I2", duration: 240, type: "work",     color: "#ff6b35", accent: "#ef4444", targetHR: "90–95%" },
-  { id: "recovery2", label: "Recovery",   short: "R2", duration: 180, type: "recovery", color: "#34d399", accent: "#10b981", targetHR: "~70%" },
-  { id: "interval3", label: "Interval 3", short: "I3", duration: 240, type: "work",     color: "#ff6b35", accent: "#ef4444", targetHR: "90–95%" },
-  { id: "recovery3", label: "Recovery",   short: "R3", duration: 180, type: "recovery", color: "#34d399", accent: "#10b981", targetHR: "~70%" },
-  { id: "interval4", label: "Interval 4", short: "I4", duration: 240, type: "work",     color: "#ff6b35", accent: "#ef4444", targetHR: "90–95%" },
-  { id: "cooldown",  label: "Cool-Down",  short: "CD", duration: 300, type: "rest",     color: "#4FC3F7", accent: "#0ea5e9", targetHR: "60–70%" },
+  { id: "warmup",    label: "Warm-Up",    short: "WU", duration: 600, type: "rest",     color: C.blue,  accent: C.blueDeep,  targetHR: "60–70%" },
+  { id: "interval1", label: "Interval 1", short: "I1", duration: 240, type: "work",     color: C.red,   accent: C.redDeep,   targetHR: "90–95%" },
+  { id: "recovery1", label: "Recovery",   short: "R1", duration: 180, type: "recovery", color: C.green, accent: C.greenDeep, targetHR: "~70%" },
+  { id: "interval2", label: "Interval 2", short: "I2", duration: 240, type: "work",     color: C.red,   accent: C.redDeep,   targetHR: "90–95%" },
+  { id: "recovery2", label: "Recovery",   short: "R2", duration: 180, type: "recovery", color: C.green, accent: C.greenDeep, targetHR: "~70%" },
+  { id: "interval3", label: "Interval 3", short: "I3", duration: 240, type: "work",     color: C.red,   accent: C.redDeep,   targetHR: "90–95%" },
+  { id: "recovery3", label: "Recovery",   short: "R3", duration: 180, type: "recovery", color: C.green, accent: C.greenDeep, targetHR: "~70%" },
+  { id: "interval4", label: "Interval 4", short: "I4", duration: 240, type: "work",     color: C.red,   accent: C.redDeep,   targetHR: "90–95%" },
+  { id: "cooldown",  label: "Cool-Down",  short: "CD", duration: 300, type: "rest",     color: C.blue,  accent: C.blueDeep,  targetHR: "60–70%" },
 ];
 
 const TOTAL = PHASES.reduce((s, p) => s + p.duration, 0);
@@ -394,27 +395,17 @@ export default function App() {
   }, [beep]);
 
   useEffect(() => { setTimeout(() => setMounted(true), 80); }, []);
-
   useEffect(() => { totalElapsedRef.current = totalElapsed; }, [totalElapsed]);
 
   useEffect(() => {
     if (!("wakeLock" in navigator)) return;
     let lock = null;
-
     const acquire = async () => {
-      try {
-        lock = await navigator.wakeLock.request("screen");
-        wakeLockRef.current = lock;
-      } catch {}
+      try { lock = await navigator.wakeLock.request("screen"); wakeLockRef.current = lock; } catch {}
     };
-
     acquire();
-
-    const onVisibility = () => {
-      if (document.visibilityState === "visible") acquire();
-    };
+    const onVisibility = () => { if (document.visibilityState === "visible") acquire(); };
     document.addEventListener("visibilitychange", onVisibility);
-
     return () => {
       document.removeEventListener("visibilitychange", onVisibility);
       lock?.release().catch(() => {});
@@ -423,38 +414,30 @@ export default function App() {
 
   useEffect(() => {
     if (!running || done) return;
-
     runStartRef.current = Date.now();
     runBaseRef.current = totalElapsedRef.current;
-
     let prevPIdx = getPhaseFromTotal(runBaseRef.current).phaseIdx;
     let lastProcessed = runBaseRef.current;
     let lastCountdownBeep = -1;
-
     intervalRef.current = setInterval(() => {
       const newTotal = Math.min(
         runBaseRef.current + Math.floor((Date.now() - runStartRef.current) / 1000),
         TOTAL
       );
-
       if (newTotal <= lastProcessed) return;
       lastProcessed = newTotal;
-
       const { phaseIdx: newPIdx, phaseElapsed: newPE } = getPhaseFromTotal(newTotal);
       const newRemaining = PHASES[newPIdx].duration - newPE;
-
       if (newPIdx !== prevPIdx) {
         prevPIdx = newPIdx;
         transitionBeep();
         setTransitioning(true);
         setTimeout(() => setTransitioning(false), 700);
       }
-
       if (newRemaining <= 3 && newRemaining > 0 && newRemaining !== lastCountdownBeep) {
         lastCountdownBeep = newRemaining;
         beep(newRemaining === 1 ? 1100 : 660, 0.07);
       }
-
       if (newTotal >= TOTAL) {
         transitionBeep();
         setTotalElapsed(TOTAL);
@@ -465,12 +448,10 @@ export default function App() {
         setRunning(false);
         return;
       }
-
       setTotalElapsed(newTotal);
       setPhaseIdx(newPIdx);
       setPhaseElapsed(newPE);
     }, 200);
-
     return () => clearInterval(intervalRef.current);
   }, [running, done, beep, transitionBeep]);
 
@@ -524,7 +505,7 @@ export default function App() {
 
       <div style={{
         position: "fixed", inset: 0, zIndex: 0,
-        background: done ? "#06120a" : isWork ? "#0f0905" : "#060c12",
+        background: done ? "#001a08" : isWork ? "#160008" : "#060c12",
         transition: "background 1.4s cubic-bezier(0.4,0,0.2,1)"
       }} />
 
@@ -532,10 +513,10 @@ export default function App() {
         position: "fixed", top: "-8%", left: "50%", transform: "translateX(-50%)",
         width: 560, height: 420, borderRadius: "50%",
         background: done
-          ? "radial-gradient(ellipse, rgba(52,211,153,0.09) 0%, transparent 65%)"
+          ? `radial-gradient(ellipse, ${C.green}18 0%, transparent 65%)`
           : isWork
-          ? "radial-gradient(ellipse, rgba(255,107,53,0.11) 0%, transparent 65%)"
-          : "radial-gradient(ellipse, rgba(79,195,247,0.07) 0%, transparent 65%)",
+          ? `radial-gradient(ellipse, ${C.red}1e 0%, transparent 65%)`
+          : `radial-gradient(ellipse, ${C.blue}14 0%, transparent 65%)`,
         pointerEvents: "none", zIndex: 0,
         transition: "background 1.4s ease",
         animation: isWork && running ? "breathe 3.5s ease-in-out infinite" : "none"
@@ -583,9 +564,9 @@ export default function App() {
                   height: 4, borderRadius: 2,
                   width: i < completedWork ? 20 : (i === completedWork && isWork ? 14 : 10),
                   background: i < completedWork
-                    ? "#ff6b35"
+                    ? C.red
                     : i === completedWork && isWork
-                    ? "rgba(255,107,53,0.45)"
+                    ? `${C.red}70`
                     : "rgba(255,255,255,0.09)",
                   transition: "all 0.55s cubic-bezier(0.4,0,0.2,1)"
                 }} />
@@ -625,7 +606,7 @@ export default function App() {
           }}>
             <div style={{
               fontSize: 86, fontWeight: 800, letterSpacing: -4, lineHeight: 1,
-              color: "#34d399", textShadow: "0 0 60px rgba(52,211,153,0.3)"
+              color: C.green, textShadow: `0 0 60px ${C.green}48`
             }}>
               Done.
             </div>
@@ -745,11 +726,11 @@ export default function App() {
                   : `linear-gradient(140deg, ${phase.accent} 0%, ${phase.color} 100%)`,
                 border: running ? "1.5px solid rgba(255,255,255,0.09)" : "none",
                 borderRadius: 16,
-                color: running ? "rgba(255,255,255,0.85)" : "#000",
+                color: running ? "rgba(255,255,255,0.85)" : "#fff",
                 fontFamily: "'Syne', sans-serif", fontWeight: 700,
                 fontSize: 14, letterSpacing: 2.5,
                 transition: "all 0.3s cubic-bezier(0.4,0,0.2,1)",
-                boxShadow: running ? "none" : `0 6px 28px ${phase.color}2e, 0 2px 8px rgba(0,0,0,0.5)`,
+                boxShadow: running ? "none" : `0 6px 28px ${phase.color}40, 0 2px 8px rgba(0,0,0,0.5)`,
                 backdropFilter: "blur(20px)",
               }}
             >
@@ -763,10 +744,10 @@ export default function App() {
                 onClick={skipToInterval1}
                 style={{
                   flex: 1, height: 48,
-                  background: "rgba(255,107,53,0.07)",
-                  border: "1.5px solid rgba(255,107,53,0.22)",
+                  background: `${C.red}12`,
+                  border: `1.5px solid ${C.red}38`,
                   borderRadius: 13,
-                  color: "#ff6b35",
+                  color: C.red,
                   fontFamily: "'Syne', sans-serif", fontWeight: 600,
                   fontSize: 11, letterSpacing: 1.5,
                   transition: "all 0.25s ease",
@@ -834,7 +815,7 @@ export default function App() {
             <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
               <div style={{
                 width: 7, height: 7, borderRadius: "50%",
-                background: PHASES[phaseIdx + 1].color, opacity: 0.55
+                background: PHASES[phaseIdx + 1].color, opacity: 0.6
               }} />
               <div>
                 <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.45)", letterSpacing: 2.5, marginBottom: 3 }}>
@@ -861,11 +842,11 @@ export default function App() {
             onClick={reset}
             style={{
               marginTop: 32, width: "100%", height: 60,
-              background: "linear-gradient(140deg, #10b981, #34d399)",
+              background: `linear-gradient(140deg, ${C.greenDeep}, ${C.green})`,
               border: "none", borderRadius: 16,
-              color: "#000", fontFamily: "'Syne', sans-serif",
+              color: "#fff", fontFamily: "'Syne', sans-serif",
               fontWeight: 700, fontSize: 14, letterSpacing: 2.5,
-              boxShadow: "0 8px 32px rgba(52,211,153,0.28)",
+              boxShadow: `0 8px 32px ${C.green}48`,
               animation: "fadeUp 0.45s ease both",
               transition: "all 0.3s ease"
             }}
