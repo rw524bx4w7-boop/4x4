@@ -285,10 +285,12 @@ function BodyBatteryGate({ onContinue }) {
       <div style={{
         position: "fixed", inset: 0, zIndex: 300,
         background: "#000",
+        overflowY: "auto",
         display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
+        alignItems: "center",
         padding: "48px 32px",
       }}>
+        <div style={{ flex: 1 }} />
         {/* Eyebrow */}
         <div style={{
           fontSize: 10, fontFamily: "'DM Mono', monospace",
@@ -452,6 +454,7 @@ function BodyBatteryGate({ onContinue }) {
             </button>
           )}
         </div>
+        <div style={{ flex: 1 }} />
       </div>
     </>
   );
