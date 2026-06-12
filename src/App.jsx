@@ -288,14 +288,14 @@ function BodyBatteryGate({ onContinue }) {
         overflowY: "auto",
         display: "flex", flexDirection: "column",
         alignItems: "center",
-        padding: "48px 32px",
+        padding: "32px 28px 24px",
       }}>
         <div style={{ flex: 1 }} />
         {/* Eyebrow */}
         <div style={{
           fontSize: 10, fontFamily: "'DM Mono', monospace",
           color: "rgba(255,255,255,0.28)", letterSpacing: 4.5,
-          marginBottom: 20, opacity: 0,
+          marginBottom: 12, opacity: 0,
           animation: "bb-up 0.6s ease 0.05s forwards",
         }}>
           PRE-WORKOUT CHECK
@@ -303,9 +303,9 @@ function BodyBatteryGate({ onContinue }) {
 
         {/* Title */}
         <div style={{
-          fontSize: 28, fontWeight: 800, color: "#fff",
+          fontSize: 26, fontWeight: 800, color: "#fff",
           letterSpacing: -0.8, textAlign: "center", lineHeight: 1.1,
-          marginBottom: 32, opacity: 0,
+          marginBottom: 20, opacity: 0,
           animation: "bb-up 0.6s ease 0.15s forwards",
         }}>
           Body Battery
@@ -314,13 +314,13 @@ function BodyBatteryGate({ onContinue }) {
         {/* Stepper */}
         <div style={{
           display: "flex", alignItems: "center", gap: 20,
-          marginBottom: 32, opacity: 0,
+          marginBottom: 20, opacity: 0,
           animation: "bb-up 0.7s ease 0.25s forwards",
         }}>
           <button
             onClick={() => setValue(v => Math.max(0, v - 1))}
             style={{
-              width: 48, height: 48, borderRadius: "50%",
+              width: 44, height: 44, borderRadius: "50%",
               background: "rgba(255,255,255,0.07)",
               border: "1.5px solid rgba(255,255,255,0.12)",
               color: "#fff", fontSize: 22, fontWeight: 300,
@@ -336,8 +336,8 @@ function BodyBatteryGate({ onContinue }) {
               setValue(n);
             }}
             style={{
-              width: 96, textAlign: "center",
-              fontSize: 56, fontWeight: 800,
+              width: 88, textAlign: "center",
+              fontSize: 48, fontWeight: 800,
               color: status.color,
               fontFamily: "'Syne', sans-serif",
               background: "transparent", border: "none", outline: "none",
@@ -348,7 +348,7 @@ function BodyBatteryGate({ onContinue }) {
           <button
             onClick={() => setValue(v => Math.min(100, v + 1))}
             style={{
-              width: 48, height: 48, borderRadius: "50%",
+              width: 44, height: 44, borderRadius: "50%",
               background: "rgba(255,255,255,0.07)",
               border: "1.5px solid rgba(255,255,255,0.12)",
               color: "#fff", fontSize: 22, fontWeight: 300,
@@ -360,8 +360,8 @@ function BodyBatteryGate({ onContinue }) {
         {/* Tier legend */}
         <div style={{
           width: "100%", maxWidth: 320,
-          display: "flex", flexDirection: "column", gap: 8,
-          marginBottom: 28, opacity: 0,
+          display: "flex", flexDirection: "column", gap: 6,
+          marginBottom: 20, opacity: 0,
           animation: "bb-up 0.7s ease 0.35s forwards",
         }}>
           {TIERS.map(t => {
@@ -369,7 +369,7 @@ function BodyBatteryGate({ onContinue }) {
             return (
               <div key={t.grade} style={{
                 display: "flex", alignItems: "center", gap: 12,
-                padding: "12px 16px", borderRadius: 12,
+                padding: "10px 14px", borderRadius: 12,
                 background: active ? `${t.color}18` : "rgba(255,255,255,0.03)",
                 border: `1.5px solid ${active ? `${t.color}55` : "rgba(255,255,255,0.06)"}`,
                 transition: "all 0.3s ease",
@@ -419,7 +419,7 @@ function BodyBatteryGate({ onContinue }) {
           <button
             onClick={handleCta}
             style={{
-              width: "100%", height: 60,
+              width: "100%", height: 54,
               background: status.go
                 ? `linear-gradient(140deg, ${status.grade === "green" ? C.greenDeep : C.yellowDeep}, ${status.color})`
                 : `linear-gradient(140deg, ${C.redDeep}, ${C.red})`,
