@@ -3,6 +3,14 @@ import { useState, useEffect, useRef, useCallback } from "react";
 const DISCLAIMER_KEY = "n4x4_disclaimer_v1";
 
 function QuoteSplash({ onContinue }) {
+  const [firing, setFiring] = useState(false);
+
+  const execute = () => {
+    if (firing) return;
+    setFiring(true);
+    setTimeout(onContinue, 420);
+  };
+
   return (
     <>
       <style>{`
@@ -14,7 +22,23 @@ function QuoteSplash({ onContinue }) {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0.5; }
         }
+        @keyframes qs-flash {
+          0%   { opacity: 0; }
+          25%  { opacity: 1; }
+          100% { opacity: 0; }
+        }
       `}</style>
+
+      {/* Full-screen execute flash */}
+      {firing && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 400,
+          background: "#ef4444",
+          animation: "qs-flash 0.42s ease forwards",
+          pointerEvents: "none",
+        }} />
+      )}
+
       <div style={{
         position: "fixed", inset: 0, zIndex: 300,
         background: "#000",
@@ -58,10 +82,10 @@ function QuoteSplash({ onContinue }) {
 
         {/* Execute CTA */}
         <button
-          onClick={onContinue}
+          onClick={execute}
           style={{
             width: "100%", maxWidth: 360, height: 62,
-            background: "#ef4444",
+            background: firing ? "#c0392b" : "#ef4444",
             border: "none", borderRadius: 16,
             color: "#fff",
             fontFamily: "'Syne', sans-serif", fontWeight: 800,
@@ -70,6 +94,7 @@ function QuoteSplash({ onContinue }) {
             boxShadow: "0 12px 40px rgba(239,68,68,0.38)",
             opacity: 0,
             animation: "qs-up 0.7s ease 0.9s forwards",
+            transition: "background 0.1s ease",
           }}
         >
           EXECUTE
