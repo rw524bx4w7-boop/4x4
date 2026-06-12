@@ -2,6 +2,52 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 const DISCLAIMER_KEY = "n4x4_disclaimer_v1";
 
+function QuoteSplash({ onContinue }) {
+  return (
+    <>
+      <style>{`
+        @keyframes flashRed {
+          0%, 100% { opacity: 1; text-shadow: 0 0 48px rgba(239,68,68,0.9); }
+          50% { opacity: 0.2; text-shadow: 0 0 8px rgba(239,68,68,0.1); }
+        }
+      `}</style>
+      <div
+        onClick={onContinue}
+        style={{
+          position: "fixed", inset: 0, zIndex: 300,
+          background: "#060c12",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "32px 28px",
+          cursor: "pointer",
+        }}
+      >
+        <div style={{ maxWidth: 400, textAlign: "center" }}>
+          <div style={{
+            fontSize: 26,
+            fontWeight: 800,
+            color: "#ef4444",
+            lineHeight: 1.35,
+            letterSpacing: -0.5,
+            animation: "flashRed 1.1s ease-in-out infinite",
+            fontFamily: "'Syne', sans-serif",
+          }}>
+            Invest in your strength today, so your family doesn't have to finance your weakness in the future.
+          </div>
+          <div style={{
+            marginTop: 44,
+            fontSize: 10,
+            fontFamily: "'DM Mono', monospace",
+            color: "rgba(255,255,255,0.3)",
+            letterSpacing: 3.5,
+          }}>
+            TAP TO CONTINUE
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function Disclaimer({ onAccept }) {
   const [checked, setChecked] = useState(false);
 
@@ -49,7 +95,6 @@ function Disclaimer({ onAccept }) {
             border: "1px solid rgba(255,255,255,0.075)",
             borderRadius: 16, padding: "20px 22px",
             marginBottom: 20,
-            overflowY: "auto", maxHeight: "45vh",
           }}>
             {[
               "Norwegian 4×4 interval training is a high-intensity cardiovascular protocol that raises your heart rate to 90–95% of maximum. It places significant stress on the heart and cardiovascular system.",
@@ -155,6 +200,15 @@ function fmt(s) {
   return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
 }
 
+function getPhaseFromTotal(total) {
+  let rem = Math.min(total, TOTAL);
+  for (let i = 0; i < PHASES.length; i++) {
+    if (rem < PHASES[i].duration) return { phaseIdx: i, phaseElapsed: rem };
+    rem -= PHASES[i].duration;
+  }
+  return { phaseIdx: PHASES.length - 1, phaseElapsed: PHASES[PHASES.length - 1].duration };
+}
+
 function ArcRing({ progress, color, size = 260, strokeWidth = 3, glow = false, children }) {
   const cx = size / 2, cy = size / 2;
   const r = (size - strokeWidth * 2 - 16) / 2;
@@ -229,6 +283,7 @@ function PhaseNode({ phase, isCurrent, isPast }) {
 }
 
 export default function App() {
+  const [showQuote, setShowQuote] = useState(true);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [phaseElapsed, setPhaseElapsed] = useState(0);
   const [totalElapsed, setTotalElapsed] = useState(0);
@@ -239,26 +294,14 @@ export default function App() {
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(
     () => localStorage.getItem(DISCLAIMER_KEY) === "1"
   );
+
   const intervalRef = useRef(null);
   const audioCtx = useRef(null);
   const activeOscillators = useRef(0);
-
-  useEffect(() => { setTimeout(() => setMounted(true), 80); }, []);
-
-  const acceptDisclaimer = () => {
-    localStorage.setItem(DISCLAIMER_KEY, "1");
-    setDisclaimerAccepted(true);
-  };
-
-  if (!disclaimerAccepted) return <Disclaimer onAccept={acceptDisclaimer} />;
-
-  const phase = PHASES[phaseIdx];
-  const phaseRemaining = phase.duration - phaseElapsed;
-  const phaseProgress = phaseElapsed / phase.duration;
-  const totalProgress = totalElapsed / TOTAL;
-  const completedWork = PHASES.slice(0, phaseIdx).filter(p => p.type === "work").length;
-  const isWork = phase.type === "work";
-  const isCountdown = phaseRemaining <= 3 && running && phaseRemaining > 0;
+  const wakeLockRef = useRef(null);
+  const totalElapsedRef = useRef(0);
+  const runStartRef = useRef(null);
+  const runBaseRef = useRef(0);
 
   const beep = useCallback((freq = 880, dur = 0.12, vol = 0.25) => {
     if (activeOscillators.current >= MAX_OSCILLATORS) return;
@@ -283,30 +326,91 @@ export default function App() {
     setTimeout(() => beep(1100, 0.18), 220);
   }, [beep]);
 
+  useEffect(() => { setTimeout(() => setMounted(true), 80); }, []);
+
+  useEffect(() => { totalElapsedRef.current = totalElapsed; }, [totalElapsed]);
+
+  useEffect(() => {
+    if (!("wakeLock" in navigator)) return;
+    let lock = null;
+
+    const acquire = async () => {
+      try {
+        lock = await navigator.wakeLock.request("screen");
+        wakeLockRef.current = lock;
+      } catch {}
+    };
+
+    acquire();
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") acquire();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      lock?.release().catch(() => {});
+    };
+  }, []);
+
   useEffect(() => {
     if (!running || done) return;
+
+    runStartRef.current = Date.now();
+    runBaseRef.current = totalElapsedRef.current;
+
+    let prevPIdx = getPhaseFromTotal(runBaseRef.current).phaseIdx;
+    let lastProcessed = runBaseRef.current;
+    let lastCountdownBeep = -1;
+
     intervalRef.current = setInterval(() => {
-      setPhaseElapsed(pe => {
-        const next = pe + 1;
-        const remaining = phase.duration - next;
-        if (remaining <= 3 && remaining > 0) beep(remaining === 1 ? 1100 : 660, 0.07);
-        if (next >= phase.duration) {
-          if (phaseIdx < PHASES.length - 1) {
-            transitionBeep();
-            setTransitioning(true);
-            setTimeout(() => setTransitioning(false), 700);
-            setPhaseIdx(pi => pi + 1);
-            return 0;
-          } else {
-            setDone(true); setRunning(false); transitionBeep(); return next;
-          }
-        }
-        return next;
-      });
-      setTotalElapsed(te => te + 1);
-    }, 1000);
+      const newTotal = Math.min(
+        runBaseRef.current + Math.floor((Date.now() - runStartRef.current) / 1000),
+        TOTAL
+      );
+
+      if (newTotal <= lastProcessed) return;
+      lastProcessed = newTotal;
+
+      const { phaseIdx: newPIdx, phaseElapsed: newPE } = getPhaseFromTotal(newTotal);
+      const newRemaining = PHASES[newPIdx].duration - newPE;
+
+      if (newPIdx !== prevPIdx) {
+        prevPIdx = newPIdx;
+        transitionBeep();
+        setTransitioning(true);
+        setTimeout(() => setTransitioning(false), 700);
+      }
+
+      if (newRemaining <= 3 && newRemaining > 0 && newRemaining !== lastCountdownBeep) {
+        lastCountdownBeep = newRemaining;
+        beep(newRemaining === 1 ? 1100 : 660, 0.07);
+      }
+
+      if (newTotal >= TOTAL) {
+        transitionBeep();
+        setTotalElapsed(TOTAL);
+        const final = getPhaseFromTotal(TOTAL);
+        setPhaseIdx(final.phaseIdx);
+        setPhaseElapsed(final.phaseElapsed);
+        setDone(true);
+        setRunning(false);
+        return;
+      }
+
+      setTotalElapsed(newTotal);
+      setPhaseIdx(newPIdx);
+      setPhaseElapsed(newPE);
+    }, 200);
+
     return () => clearInterval(intervalRef.current);
-  }, [running, done, phaseIdx, phase.duration, beep, transitionBeep]);
+  }, [running, done, beep, transitionBeep]);
+
+  const acceptDisclaimer = () => {
+    localStorage.setItem(DISCLAIMER_KEY, "1");
+    setDisclaimerAccepted(true);
+  };
 
   const toggle = () => {
     if (done) return;
@@ -326,6 +430,17 @@ export default function App() {
     const elapsed = PHASES.slice(0, i1).reduce((s, p) => s + p.duration, 0);
     setPhaseIdx(i1); setPhaseElapsed(0); setTotalElapsed(elapsed); setRunning(false);
   };
+
+  if (showQuote) return <QuoteSplash onContinue={() => setShowQuote(false)} />;
+  if (!disclaimerAccepted) return <Disclaimer onAccept={acceptDisclaimer} />;
+
+  const phase = PHASES[phaseIdx];
+  const phaseRemaining = phase.duration - phaseElapsed;
+  const phaseProgress = phaseElapsed / phase.duration;
+  const totalProgress = totalElapsed / TOTAL;
+  const completedWork = PHASES.slice(0, phaseIdx).filter(p => p.type === "work").length;
+  const isWork = phase.type === "work";
+  const isCountdown = phaseRemaining <= 3 && running && phaseRemaining > 0;
 
   return (
     <>
