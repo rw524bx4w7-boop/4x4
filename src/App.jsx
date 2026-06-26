@@ -64,8 +64,8 @@ function QuoteSplash({ onContinue }) {
         padding: "56px 32px 48px",
       }}>
         <div style={{
-          fontSize: 10, fontFamily: "'DM Mono', monospace",
-          color: "rgba(255,255,255,0.28)", letterSpacing: 4.5,
+          fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif",
+          color: "rgba(255,255,255,0.28)", letterSpacing: 1,
           marginBottom: 28, opacity: 0,
           animation: "qs-up 0.7s ease 0.1s forwards",
         }}>
@@ -74,10 +74,10 @@ function QuoteSplash({ onContinue }) {
 
         <div style={{
           maxWidth: 360, textAlign: "center",
-          fontSize: 27, fontWeight: 800,
+          fontSize: 27, fontWeight: 600,
           color: C.red,
           lineHeight: 1.28, letterSpacing: -0.6,
-          fontFamily: "'Syne', sans-serif",
+          fontFamily: "system-ui, -apple-system, sans-serif",
           opacity: 0,
           animation: "qs-up 0.8s ease 0.35s forwards, qs-breathe 3.2s ease-in-out 1.4s infinite",
         }}>
@@ -94,12 +94,12 @@ function QuoteSplash({ onContinue }) {
         <button
           onClick={execute}
           style={{
-            width: "100%", maxWidth: 360, height: 62,
+            width: "100%", maxWidth: 360, height: 56,
             background: firing ? C.redDeep : C.red,
-            border: "none", borderRadius: 16,
+            border: "none", borderRadius: 9999,
             color: "#fff",
-            fontFamily: "'Syne', sans-serif", fontWeight: 800,
-            fontSize: 14, letterSpacing: 4.5,
+            fontFamily: "system-ui, -apple-system, sans-serif", fontWeight: 600,
+            fontSize: 17, letterSpacing: 0.5,
             cursor: "pointer",
             boxShadow: `0 12px 40px ${C.red}60`,
             opacity: 0,
@@ -112,8 +112,8 @@ function QuoteSplash({ onContinue }) {
 
         <div style={{
           marginTop: 16,
-          fontSize: 10, fontFamily: "'DM Mono', monospace",
-          color: "rgba(255,255,255,0.18)", letterSpacing: 2.5,
+          fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif",
+          color: "rgba(255,255,255,0.18)", letterSpacing: 1,
           opacity: 0,
           animation: "qs-up 0.6s ease 1.1s forwards",
         }}>
@@ -153,14 +153,14 @@ function Disclaimer({ onAccept }) {
           </div>
 
           <div style={{
-            fontSize: 10, fontFamily: "'DM Mono', monospace",
-            color: "rgba(255,255,255,0.45)", letterSpacing: 3.5,
+            fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif",
+            color: "rgba(255,255,255,0.45)", letterSpacing: 1,
             textAlign: "center", marginBottom: 8,
           }}>
             HEALTH & SAFETY
           </div>
           <div style={{
-            fontSize: 22, fontWeight: 800, color: "#fff",
+            fontSize: 22, fontWeight: 600, color: "#fff",
             letterSpacing: -0.5, textAlign: "center", marginBottom: 24,
           }}>
             Cardiac Disclosure
@@ -229,10 +229,10 @@ function Disclaimer({ onAccept }) {
                 ? `linear-gradient(140deg, ${C.redDeep}, ${C.red})`
                 : "rgba(255,255,255,0.04)",
               border: checked ? "none" : "1.5px solid rgba(255,255,255,0.07)",
-              borderRadius: 14,
+              borderRadius: 9999,
               color: checked ? "#fff" : "rgba(255,255,255,0.25)",
-              fontFamily: "'Syne', sans-serif", fontWeight: 700,
-              fontSize: 13, letterSpacing: 2.5,
+              fontFamily: "system-ui, -apple-system, sans-serif", fontWeight: 600,
+              fontSize: 17, letterSpacing: 0,
               cursor: checked ? "pointer" : "not-allowed",
               transition: "all 0.3s ease",
               boxShadow: checked ? `0 6px 24px ${C.red}48` : "none",
@@ -243,8 +243,8 @@ function Disclaimer({ onAccept }) {
 
           <p style={{
             textAlign: "center", marginTop: 14,
-            fontSize: 10, fontFamily: "'DM Mono', monospace",
-            color: "rgba(255,255,255,0.25)", letterSpacing: 1.5,
+            fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif",
+            color: "rgba(255,255,255,0.25)", letterSpacing: 0.5,
           }}>
             YOUR ACCEPTANCE IS RECORDED LOCALLY ON THIS DEVICE
           </p>
@@ -262,7 +262,7 @@ function BodyBatteryGate({ onContinue }) {
 
   const handleCta = () => {
     if (status.go) { onContinue(value); return; }
-    setConfirmed(true);
+    setConfirmed(true); // show override option for red
   };
 
   const TIERS = [
@@ -294,165 +294,172 @@ function BodyBatteryGate({ onContinue }) {
           width: "100%", maxWidth: 380,
           display: "flex", flexDirection: "column",
           alignItems: "center",
-          padding: "32px 28px",
+          padding: "32px 28px 32px",
         }}>
-          <div style={{
-            fontSize: 10, fontFamily: "'DM Mono', monospace",
-            color: "rgba(255,255,255,0.28)", letterSpacing: 4.5,
-            marginBottom: 12, opacity: 0,
-            animation: "bb-up 0.6s ease 0.05s forwards",
-          }}>
-            PRE-WORKOUT CHECK
-          </div>
+        {/* Eyebrow */}
+        <div style={{
+          fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif",
+          color: "rgba(255,255,255,0.28)", letterSpacing: 1,
+          marginBottom: 12, opacity: 0,
+          animation: "bb-up 0.6s ease 0.05s forwards",
+        }}>
+          PRE-WORKOUT CHECK
+        </div>
 
-          <div style={{
-            fontSize: 26, fontWeight: 800, color: "#fff",
-            letterSpacing: -0.8, textAlign: "center", lineHeight: 1.1,
-            marginBottom: 20, opacity: 0,
-            animation: "bb-up 0.6s ease 0.15s forwards",
-          }}>
-            Body Battery
-          </div>
+        {/* Title */}
+        <div style={{
+          fontSize: 26, fontWeight: 600, color: "#fff",
+          letterSpacing: -0.8, textAlign: "center", lineHeight: 1.1,
+          marginBottom: 20, opacity: 0,
+          animation: "bb-up 0.6s ease 0.15s forwards",
+        }}>
+          Body Battery
+        </div>
 
-          <div style={{
-            display: "flex", alignItems: "center", gap: 20,
-            marginBottom: 20, opacity: 0,
-            animation: "bb-up 0.7s ease 0.25s forwards",
-          }}>
-            <button
-              onClick={() => setValue(v => Math.max(0, v - 1))}
-              style={{
-                width: 44, height: 44, borderRadius: "50%",
-                background: "rgba(255,255,255,0.07)",
-                border: "1.5px solid rgba(255,255,255,0.12)",
-                color: "#fff", fontSize: 22, fontWeight: 300,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}
-            >−</button>
+        {/* Stepper */}
+        <div style={{
+          display: "flex", alignItems: "center", gap: 20,
+          marginBottom: 20, opacity: 0,
+          animation: "bb-up 0.7s ease 0.25s forwards",
+        }}>
+          <button
+            onClick={() => setValue(v => Math.max(0, v - 1))}
+            style={{
+              width: 44, height: 44, borderRadius: "50%",
+              background: "rgba(255,255,255,0.07)",
+              border: "1.5px solid rgba(255,255,255,0.12)",
+              color: "#fff", fontSize: 22, fontWeight: 300,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >−</button>
 
-            <input
-              type="number" min="0" max="100"
-              value={value}
-              onChange={e => {
-                const n = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
-                setValue(n);
-              }}
-              style={{
-                width: 88, textAlign: "center",
-                fontSize: 48, fontWeight: 800,
-                color: status.color,
-                fontFamily: "'Syne', sans-serif",
-                background: "transparent", border: "none", outline: "none",
-                transition: "color 0.3s ease",
-              }}
-            />
+          <input
+            type="number" min="0" max="100"
+            value={value}
+            onChange={e => {
+              const n = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
+              setValue(n);
+            }}
+            style={{
+              width: 88, textAlign: "center",
+              fontSize: 48, fontWeight: 600,
+              color: status.color,
+              letterSpacing: -1,
+              fontFamily: "system-ui, -apple-system, sans-serif",
+              background: "transparent", border: "none", outline: "none",
+              transition: "color 0.3s ease",
+            }}
+          />
 
-            <button
-              onClick={() => setValue(v => Math.min(100, v + 1))}
-              style={{
-                width: 44, height: 44, borderRadius: "50%",
-                background: "rgba(255,255,255,0.07)",
-                border: "1.5px solid rgba(255,255,255,0.12)",
-                color: "#fff", fontSize: 22, fontWeight: 300,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}
-            >+</button>
-          </div>
+          <button
+            onClick={() => setValue(v => Math.min(100, v + 1))}
+            style={{
+              width: 44, height: 44, borderRadius: "50%",
+              background: "rgba(255,255,255,0.07)",
+              border: "1.5px solid rgba(255,255,255,0.12)",
+              color: "#fff", fontSize: 22, fontWeight: 300,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >+</button>
+        </div>
 
-          <div style={{
-            width: "100%",
-            display: "flex", flexDirection: "column", gap: 6,
-            marginBottom: 20, opacity: 0,
-            animation: "bb-up 0.7s ease 0.35s forwards",
-          }}>
-            {TIERS.map(t => {
-              const active = status.grade === t.grade;
-              return (
-                <div key={t.grade} style={{
-                  display: "flex", alignItems: "center", gap: 12,
-                  padding: "10px 14px", borderRadius: 12,
-                  background: active ? `${t.color}18` : "rgba(255,255,255,0.03)",
-                  border: `1.5px solid ${active ? `${t.color}55` : "rgba(255,255,255,0.06)"}`,
-                  transition: "all 0.3s ease",
-                }}>
-                  <div style={{
-                    width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
-                    background: t.color,
-                    boxShadow: active ? `0 0 10px ${t.color}99` : "none",
-                    transition: "box-shadow 0.3s ease",
-                  }} />
-                  <div style={{ flex: 1 }}>
-                    <div style={{
-                      fontSize: 11, fontWeight: 700,
-                      fontFamily: "'Syne', sans-serif",
-                      color: active ? t.color : "rgba(255,255,255,0.45)",
-                      letterSpacing: 1.5,
-                      transition: "color 0.3s ease",
-                    }}>
-                      {t.label}
-                    </div>
-                    {active && (
-                      <div style={{
-                        fontSize: 10, fontFamily: "'DM Mono', monospace",
-                        color: "rgba(255,255,255,0.5)", marginTop: 2,
-                      }}>
-                        {t.sub}
-                      </div>
-                    )}
-                  </div>
-                  <div style={{
-                    fontSize: 9, fontFamily: "'DM Mono', monospace",
-                    color: active ? t.color : "rgba(255,255,255,0.25)",
-                    letterSpacing: 1,
-                  }}>
-                    {t.range}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div style={{
-            width: "100%", opacity: 0,
-            animation: "bb-up 0.7s ease 0.5s forwards",
-          }}>
-            <button
-              onClick={handleCta}
-              style={{
-                width: "100%", height: 54,
-                background: status.go
-                  ? `linear-gradient(140deg, ${status.grade === "green" ? C.greenDeep : C.yellowDeep}, ${status.color})`
-                  : `linear-gradient(140deg, ${C.redDeep}, ${C.red})`,
-                border: "none", borderRadius: 16,
-                color: status.grade === "yellow" ? "#000" : "#fff",
-                fontFamily: "'Syne', sans-serif", fontWeight: 800,
-                fontSize: 13, letterSpacing: 3.5,
-                cursor: "pointer",
-                boxShadow: `0 10px 36px ${status.color}50`,
+        {/* Tier legend */}
+        <div style={{
+          width: "100%",
+          display: "flex", flexDirection: "column", gap: 6,
+          marginBottom: 20, opacity: 0,
+          animation: "bb-up 0.7s ease 0.35s forwards",
+        }}>
+          {TIERS.map(t => {
+            const active = status.grade === t.grade;
+            return (
+              <div key={t.grade} style={{
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "10px 14px", borderRadius: 12,
+                background: active ? `${t.color}18` : "rgba(255,255,255,0.03)",
+                border: `1.5px solid ${active ? `${t.color}55` : "rgba(255,255,255,0.06)"}`,
                 transition: "all 0.3s ease",
+              }}>
+                <div style={{
+                  width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
+                  background: t.color,
+                  boxShadow: active ? `0 0 10px ${t.color}99` : "none",
+                  transition: "box-shadow 0.3s ease",
+                }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontSize: 11, fontWeight: 700,
+                    fontFamily: "system-ui, -apple-system, sans-serif",
+                    color: active ? t.color : "rgba(255,255,255,0.45)",
+                    letterSpacing: 1.5,
+                    transition: "color 0.3s ease",
+                  }}>
+                    {t.label}
+                  </div>
+                  {active && (
+                    <div style={{
+                      fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif",
+                      color: "rgba(255,255,255,0.5)", marginTop: 2,
+                    }}>
+                      {t.sub}
+                    </div>
+                  )}
+                </div>
+                <div style={{
+                  fontSize: 9, fontFamily: "system-ui, -apple-system, sans-serif",
+                  color: active ? t.color : "rgba(255,255,255,0.25)",
+                  letterSpacing: 1,
+                }}>
+                  {t.range}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* CTA */}
+        <div style={{
+          width: "100%", opacity: 0,
+          animation: "bb-up 0.7s ease 0.5s forwards",
+        }}>
+          <button
+            onClick={handleCta}
+            style={{
+              width: "100%", height: 54,
+              background: status.go
+                ? `linear-gradient(140deg, ${status.grade === "green" ? C.greenDeep : C.yellowDeep}, ${status.color})`
+                : `linear-gradient(140deg, ${C.redDeep}, ${C.red})`,
+              border: "none", borderRadius: 9999,
+              color: status.grade === "yellow" ? "#000" : "#fff",
+              fontFamily: "system-ui, -apple-system, sans-serif", fontWeight: 600,
+              fontSize: 17, letterSpacing: 0,
+              cursor: "pointer",
+              boxShadow: `0 10px 36px ${status.color}50`,
+              transition: "all 0.3s ease",
+            }}
+          >
+            {status.cta}
+          </button>
+
+          {/* Red override */}
+          {status.grade === "red" && confirmed && (
+            <button
+              onClick={() => onContinue(value)}
+              style={{
+                width: "100%", marginTop: 12, height: 44,
+                background: "transparent",
+                border: "1.5px solid rgba(255,255,255,0.1)",
+                borderRadius: 12,
+                color: "rgba(255,255,255,0.35)",
+                fontFamily: "system-ui, -apple-system, sans-serif",
+                fontSize: 10, letterSpacing: 1,
+                cursor: "pointer",
               }}
             >
-              {status.cta}
+              OVERRIDE — PROCEED ANYWAY
             </button>
-
-            {status.grade === "red" && confirmed && (
-              <button
-                onClick={() => onContinue(value)}
-                style={{
-                  width: "100%", marginTop: 12, height: 44,
-                  background: "transparent",
-                  border: "1.5px solid rgba(255,255,255,0.1)",
-                  borderRadius: 12,
-                  color: "rgba(255,255,255,0.35)",
-                  fontFamily: "'DM Mono', monospace",
-                  fontSize: 10, letterSpacing: 2.5,
-                  cursor: "pointer",
-                }}
-              >
-                OVERRIDE — PROCEED ANYWAY
-              </button>
-            )}
-          </div>
+          )}
+        </div>
         </div>
       </div>
     </>
@@ -553,7 +560,7 @@ function PhaseNode({ phase, isCurrent, isPast }) {
         )}
       </div>
       <span style={{
-        fontSize: 8, fontFamily: "'DM Mono', monospace",
+        fontSize: 8, fontFamily: "system-ui, -apple-system, sans-serif",
         color: isCurrent ? phase.color : "rgba(255,255,255,0.45)",
         letterSpacing: 1, transition: "color 0.5s ease"
       }}>
@@ -715,7 +722,7 @@ export default function App() {
         @keyframes breathe { 0%,100%{transform:scale(1) translateX(-50%)} 50%{transform:scale(1.08) translateX(-46%)} }
         @keyframes flashIn { 0%,100%{opacity:0} 40%{opacity:0.1} }
         button { cursor: pointer; }
-        button:active { transform: scale(0.97) !important; transition: transform 0.1s ease !important; }
+        button:active { transform: scale(0.95) !important; transition: transform 0.08s ease !important; }
       `}</style>
 
       <div style={{
@@ -760,17 +767,17 @@ export default function App() {
         }}>
           <div>
             <div style={{
-              fontSize: 10, fontFamily: "'DM Mono', monospace",
-              color: "rgba(255,255,255,0.45)", letterSpacing: 3.5, marginBottom: 6
+              fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif",
+              color: "rgba(255,255,255,0.45)", letterSpacing: 1, marginBottom: 6
             }}>
               VO₂MAX PROTOCOL
             </div>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#fff", letterSpacing: -0.8, lineHeight: 1 }}>
+            <div style={{ fontSize: 24, fontWeight: 600, color: "#fff", letterSpacing: -0.8, lineHeight: 1 }}>
               Norwegian 4×4
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 5, paddingTop: 4 }}>
-            <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.45)", letterSpacing: 2.5 }}>
+            <div style={{ fontSize: 9, fontFamily: "system-ui, -apple-system, sans-serif", color: "rgba(255,255,255,0.45)", letterSpacing: 1 }}>
               INTERVALS
             </div>
             <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
@@ -820,14 +827,14 @@ export default function App() {
             animation: "fadeUp 0.45s ease both"
           }}>
             <div style={{
-              fontSize: 86, fontWeight: 800, letterSpacing: -4, lineHeight: 1,
+              fontSize: 86, fontWeight: 600, letterSpacing: -4, lineHeight: 1,
               color: C.green, textShadow: `0 0 60px ${C.green}48`
             }}>
               Done.
             </div>
             <div style={{
-              fontSize: 11, fontFamily: "'DM Mono', monospace",
-              color: "rgba(255,255,255,0.55)", letterSpacing: 3, marginTop: 14
+              fontSize: 11, fontFamily: "system-ui, -apple-system, sans-serif",
+              color: "rgba(255,255,255,0.55)", letterSpacing: 1, marginTop: 14
             }}>
               42:00 · WORKOUT COMPLETE
             </div>
@@ -840,8 +847,8 @@ export default function App() {
           }}>
             <div style={{ textAlign: "center", marginBottom: 20 }}>
               <div style={{
-                fontSize: 12, fontFamily: "'DM Mono', monospace",
-                color: phase.color, letterSpacing: 4,
+                fontSize: 12, fontFamily: "system-ui, -apple-system, sans-serif",
+                color: phase.color, letterSpacing: 1,
                 transition: "color 0.7s ease", marginBottom: 10
               }}>
                 {phase.label.toUpperCase()}
@@ -854,8 +861,8 @@ export default function App() {
                   animation: isWork && running ? "pulseGlow 1s ease infinite" : "none"
                 }} />
                 <span style={{
-                  fontSize: 10, fontFamily: "'DM Mono', monospace",
-                  color: "rgba(255,255,255,0.55)", letterSpacing: 2
+                  fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif",
+                  color: "rgba(255,255,255,0.55)", letterSpacing: 1
                 }}>
                   TARGET {phase.targetHR} MAX HR
                 </span>
@@ -872,7 +879,7 @@ export default function App() {
               <div style={{ textAlign: "center" }}>
                 <div style={{
                   fontSize: isCountdown ? 84 : 70,
-                  fontWeight: 800,
+                  fontWeight: 600,
                   letterSpacing: -3,
                   lineHeight: 1,
                   color: isCountdown ? phase.color : "#ffffff",
@@ -884,8 +891,8 @@ export default function App() {
                   {fmt(phaseRemaining)}
                 </div>
                 <div style={{
-                  fontSize: 9, fontFamily: "'DM Mono', monospace",
-                  color: "rgba(255,255,255,0.45)", letterSpacing: 3.5, marginTop: 10
+                  fontSize: 9, fontFamily: "system-ui, -apple-system, sans-serif",
+                  color: "rgba(255,255,255,0.45)", letterSpacing: 1, marginTop: 10
                 }}>
                   PHASE
                 </div>
@@ -894,10 +901,10 @@ export default function App() {
 
             <div style={{ width: "100%", marginTop: 30, padding: "0 4px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 9 }}>
-                <span style={{ fontSize: 10, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.5)", letterSpacing: 2 }}>
+                <span style={{ fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif", color: "rgba(255,255,255,0.5)", letterSpacing: 1 }}>
                   {fmt(totalElapsed)}
                 </span>
-                <span style={{ fontSize: 10, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.5)", letterSpacing: 2 }}>
+                <span style={{ fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif", color: "rgba(255,255,255,0.5)", letterSpacing: 1 }}>
                   −{fmt(TOTAL - totalElapsed)}
                 </span>
               </div>
@@ -940,12 +947,12 @@ export default function App() {
                   ? "rgba(255,255,255,0.04)"
                   : `linear-gradient(140deg, ${phase.accent} 0%, ${phase.color} 100%)`,
                 border: running ? "1.5px solid rgba(255,255,255,0.09)" : "none",
-                borderRadius: 16,
+                borderRadius: 9999,
                 color: running ? "rgba(255,255,255,0.85)" : "#fff",
-                fontFamily: "'Syne', sans-serif", fontWeight: 700,
-                fontSize: 14, letterSpacing: 2.5,
+                fontFamily: "system-ui, -apple-system, sans-serif", fontWeight: 300,
+                fontSize: 18, letterSpacing: 0,
                 transition: "all 0.3s cubic-bezier(0.4,0,0.2,1)",
-                boxShadow: running ? "none" : `0 6px 28px ${phase.color}40, 0 2px 8px rgba(0,0,0,0.5)`,
+                boxShadow: running ? "none" : `0 4px 20px ${phase.color}38`,
                 backdropFilter: "blur(20px)",
               }}
             >
@@ -961,14 +968,14 @@ export default function App() {
                   flex: 1, height: 48,
                   background: `${C.red}12`,
                   border: `1.5px solid ${C.red}38`,
-                  borderRadius: 13,
+                  borderRadius: 18,
                   color: C.red,
-                  fontFamily: "'Syne', sans-serif", fontWeight: 600,
-                  fontSize: 11, letterSpacing: 1.5,
+                  fontFamily: "system-ui, -apple-system, sans-serif", fontWeight: 400,
+                  fontSize: 14, letterSpacing: -0.224,
                   transition: "all 0.25s ease",
                 }}
               >
-                SKIP TO INT 1
+                Skip to Interval 1
               </button>
             )}
             <button
@@ -977,14 +984,14 @@ export default function App() {
                 flex: 1, height: 48,
                 background: "rgba(255,255,255,0.025)",
                 border: "1.5px solid rgba(255,255,255,0.065)",
-                borderRadius: 13,
+                borderRadius: 18,
                 color: "rgba(255,255,255,0.5)",
-                fontFamily: "'Syne', sans-serif", fontWeight: 600,
-                fontSize: 11, letterSpacing: 1.5,
+                fontFamily: "system-ui, -apple-system, sans-serif", fontWeight: 400,
+                fontSize: 14, letterSpacing: -0.224,
                 transition: "all 0.25s ease",
               }}
             >
-              RESET
+              Reset
             </button>
           </div>
         </div>
@@ -1004,17 +1011,17 @@ export default function App() {
               <div key={s.label} style={{
                 background: s.color ? `${s.color}10` : "rgba(255,255,255,0.028)",
                 border: `1px solid ${s.color ? `${s.color}35` : "rgba(255,255,255,0.055)"}`,
-                borderRadius: 14, padding: "14px 10px",
+                borderRadius: 18, padding: "14px 10px",
                 textAlign: "center",
                 transition: "all 0.4s ease",
               }}>
-                <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.45)", letterSpacing: 2, marginBottom: 7 }}>
+                <div style={{ fontSize: 11, fontFamily: "system-ui, -apple-system, sans-serif", color: "rgba(255,255,255,0.45)", letterSpacing: -0.08, marginBottom: 7 }}>
                   {s.label}
                 </div>
-                <div style={{ fontSize: 19, fontWeight: 700, color: s.color || "rgba(255,255,255,0.92)", letterSpacing: -0.5, lineHeight: 1, transition: "color 0.3s ease" }}>
+                <div style={{ fontSize: 20, fontWeight: 600, color: s.color || "rgba(255,255,255,0.92)", letterSpacing: -0.374, lineHeight: 1, transition: "color 0.3s ease" }}>
                   {s.value}
                 </div>
-                <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: s.color ? `${s.color}cc` : "rgba(255,255,255,0.38)", letterSpacing: 1, marginTop: 5, transition: "color 0.3s ease" }}>
+                <div style={{ fontSize: 10, fontFamily: "system-ui, -apple-system, sans-serif", color: s.color ? `${s.color}cc` : "rgba(255,255,255,0.38)", letterSpacing: 0.5, marginTop: 5, transition: "color 0.3s ease" }}>
                   {s.sub}
                 </div>
               </div>
@@ -1027,7 +1034,7 @@ export default function App() {
             width: "100%", marginTop: 10,
             background: "rgba(255,255,255,0.018)",
             border: "1px solid rgba(255,255,255,0.045)",
-            borderRadius: 14, padding: "14px 18px",
+            borderRadius: 18, padding: "14px 18px",
             display: "flex", justifyContent: "space-between", alignItems: "center",
             animation: "fadeUp 0.55s ease both", animationDelay: "0.65s"
           }}>
@@ -1037,7 +1044,7 @@ export default function App() {
                 background: PHASES[phaseIdx + 1].color, opacity: 0.6
               }} />
               <div>
-                <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.45)", letterSpacing: 2.5, marginBottom: 3 }}>
+                <div style={{ fontSize: 11, fontFamily: "system-ui, -apple-system, sans-serif", color: "rgba(255,255,255,0.45)", letterSpacing: 1, marginBottom: 3 }}>
                   UP NEXT
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.72)" }}>
@@ -1046,10 +1053,10 @@ export default function App() {
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 15, fontWeight: 700, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.65)" }}>
+              <div style={{ fontSize: 15, fontWeight: 600, fontFamily: "system-ui, -apple-system, sans-serif", color: "rgba(255,255,255,0.65)" }}>
                 {fmt(PHASES[phaseIdx + 1].duration)}
               </div>
-              <div style={{ fontSize: 9, fontFamily: "'DM Mono', monospace", color: "rgba(255,255,255,0.4)", letterSpacing: 1, marginTop: 3 }}>
+              <div style={{ fontSize: 9, fontFamily: "system-ui, -apple-system, sans-serif", color: "rgba(255,255,255,0.4)", letterSpacing: 1, marginTop: 3 }}>
                 {PHASES[phaseIdx + 1].targetHR} MAX HR
               </div>
             </div>
@@ -1060,12 +1067,12 @@ export default function App() {
           <button
             onClick={reset}
             style={{
-              marginTop: 32, width: "100%", height: 60,
+              marginTop: 32, width: "100%", height: 56,
               background: `linear-gradient(140deg, ${C.greenDeep}, ${C.green})`,
-              border: "none", borderRadius: 16,
-              color: "#fff", fontFamily: "'Syne', sans-serif",
-              fontWeight: 700, fontSize: 14, letterSpacing: 2.5,
-              boxShadow: `0 8px 32px ${C.green}48`,
+              border: "none", borderRadius: 9999,
+              color: "#fff", fontFamily: "system-ui, -apple-system, sans-serif",
+              fontWeight: 300, fontSize: 18, letterSpacing: 0,
+              boxShadow: `0 4px 20px ${C.green}38`,
               animation: "fadeUp 0.45s ease both",
               transition: "all 0.3s ease"
             }}
