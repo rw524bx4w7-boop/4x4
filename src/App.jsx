@@ -16,7 +16,7 @@ const C = {
 
 function getBattStatus(v) {
   if (v >= 75) return { grade: "green",  label: "CRUSH IT",          sub: "Energy reserves optimal. Push to your limit.",   color: C.green,  cta: "CRUSH IT",          go: true  };
-  if (v >= 40) return { grade: "yellow", label: "PROCEED WITH CARE", sub: "Moderate reserves. Dial back intensity if needed.", color: C.yellow, cta: "START WITH CARE",    go: true  };
+  if (v >= 50) return { grade: "yellow", label: "PROCEED WITH CARE", sub: "Moderate reserves. Dial back intensity if needed.", color: C.yellow, cta: "START WITH CARE",    go: true  };
   return         { grade: "red",    label: "NO GO",              sub: "Insufficient reserves. Rest or easy movement only.", color: C.red,    cta: "REST TODAY",         go: false };
 }
 
@@ -262,13 +262,13 @@ function BodyBatteryGate({ onContinue }) {
 
   const handleCta = () => {
     if (status.go) { onContinue(value); return; }
-    setConfirmed(true); // show override option for red
+    setConfirmed(true);
   };
 
   const TIERS = [
     { range: "75 – 100", ...getBattStatus(75) },
-    { range: "40 – 74",  ...getBattStatus(50) },
-    { range: "0 – 39",   ...getBattStatus(20) },
+    { range: "50 – 74",  ...getBattStatus(60) },
+    { range: "0 – 49",   ...getBattStatus(20) },
   ];
 
   return (
@@ -285,172 +285,174 @@ function BodyBatteryGate({ onContinue }) {
       <div style={{
         position: "fixed", inset: 0, zIndex: 300,
         background: "#000",
+        overflowY: "auto",
         display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        padding: "48px 32px",
+        alignItems: "center",
       }}>
-        {/* Eyebrow */}
         <div style={{
-          fontSize: 10, fontFamily: "'DM Mono', monospace",
-          color: "rgba(255,255,255,0.28)", letterSpacing: 4.5,
-          marginBottom: 20, opacity: 0,
-          animation: "bb-up 0.6s ease 0.05s forwards",
+          margin: "auto",
+          width: "100%", maxWidth: 380,
+          display: "flex", flexDirection: "column",
+          alignItems: "center",
+          padding: "32px 28px",
         }}>
-          PRE-WORKOUT CHECK
-        </div>
+          <div style={{
+            fontSize: 10, fontFamily: "'DM Mono', monospace",
+            color: "rgba(255,255,255,0.28)", letterSpacing: 4.5,
+            marginBottom: 12, opacity: 0,
+            animation: "bb-up 0.6s ease 0.05s forwards",
+          }}>
+            PRE-WORKOUT CHECK
+          </div>
 
-        {/* Title */}
-        <div style={{
-          fontSize: 28, fontWeight: 800, color: "#fff",
-          letterSpacing: -0.8, textAlign: "center", lineHeight: 1.1,
-          marginBottom: 32, opacity: 0,
-          animation: "bb-up 0.6s ease 0.15s forwards",
-        }}>
-          Body Battery
-        </div>
+          <div style={{
+            fontSize: 26, fontWeight: 800, color: "#fff",
+            letterSpacing: -0.8, textAlign: "center", lineHeight: 1.1,
+            marginBottom: 20, opacity: 0,
+            animation: "bb-up 0.6s ease 0.15s forwards",
+          }}>
+            Body Battery
+          </div>
 
-        {/* Stepper */}
-        <div style={{
-          display: "flex", alignItems: "center", gap: 20,
-          marginBottom: 32, opacity: 0,
-          animation: "bb-up 0.7s ease 0.25s forwards",
-        }}>
-          <button
-            onClick={() => setValue(v => Math.max(0, v - 1))}
-            style={{
-              width: 48, height: 48, borderRadius: "50%",
-              background: "rgba(255,255,255,0.07)",
-              border: "1.5px solid rgba(255,255,255,0.12)",
-              color: "#fff", fontSize: 22, fontWeight: 300,
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}
-          >−</button>
-
-          <input
-            type="number" min="0" max="100"
-            value={value}
-            onChange={e => {
-              const n = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
-              setValue(n);
-            }}
-            style={{
-              width: 96, textAlign: "center",
-              fontSize: 56, fontWeight: 800,
-              color: status.color,
-              fontFamily: "'Syne', sans-serif",
-              background: "transparent", border: "none", outline: "none",
-              transition: "color 0.3s ease",
-            }}
-          />
-
-          <button
-            onClick={() => setValue(v => Math.min(100, v + 1))}
-            style={{
-              width: 48, height: 48, borderRadius: "50%",
-              background: "rgba(255,255,255,0.07)",
-              border: "1.5px solid rgba(255,255,255,0.12)",
-              color: "#fff", fontSize: 22, fontWeight: 300,
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}
-          >+</button>
-        </div>
-
-        {/* Tier legend */}
-        <div style={{
-          width: "100%", maxWidth: 320,
-          display: "flex", flexDirection: "column", gap: 8,
-          marginBottom: 28, opacity: 0,
-          animation: "bb-up 0.7s ease 0.35s forwards",
-        }}>
-          {TIERS.map(t => {
-            const active = status.grade === t.grade;
-            return (
-              <div key={t.grade} style={{
-                display: "flex", alignItems: "center", gap: 12,
-                padding: "12px 16px", borderRadius: 12,
-                background: active ? `${t.color}18` : "rgba(255,255,255,0.03)",
-                border: `1.5px solid ${active ? `${t.color}55` : "rgba(255,255,255,0.06)"}`,
-                transition: "all 0.3s ease",
-              }}>
-                <div style={{
-                  width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
-                  background: t.color,
-                  boxShadow: active ? `0 0 10px ${t.color}99` : "none",
-                  transition: "box-shadow 0.3s ease",
-                }} />
-                <div style={{ flex: 1 }}>
-                  <div style={{
-                    fontSize: 11, fontWeight: 700,
-                    fontFamily: "'Syne', sans-serif",
-                    color: active ? t.color : "rgba(255,255,255,0.45)",
-                    letterSpacing: 1.5,
-                    transition: "color 0.3s ease",
-                  }}>
-                    {t.label}
-                  </div>
-                  {active && (
-                    <div style={{
-                      fontSize: 10, fontFamily: "'DM Mono', monospace",
-                      color: "rgba(255,255,255,0.5)", marginTop: 2,
-                    }}>
-                      {t.sub}
-                    </div>
-                  )}
-                </div>
-                <div style={{
-                  fontSize: 9, fontFamily: "'DM Mono', monospace",
-                  color: active ? t.color : "rgba(255,255,255,0.25)",
-                  letterSpacing: 1,
-                }}>
-                  {t.range}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* CTA */}
-        <div style={{
-          width: "100%", maxWidth: 320, opacity: 0,
-          animation: "bb-up 0.7s ease 0.5s forwards",
-        }}>
-          <button
-            onClick={handleCta}
-            style={{
-              width: "100%", height: 60,
-              background: status.go
-                ? `linear-gradient(140deg, ${status.grade === "green" ? C.greenDeep : C.yellowDeep}, ${status.color})`
-                : `linear-gradient(140deg, ${C.redDeep}, ${C.red})`,
-              border: "none", borderRadius: 16,
-              color: status.grade === "yellow" ? "#000" : "#fff",
-              fontFamily: "'Syne', sans-serif", fontWeight: 800,
-              fontSize: 13, letterSpacing: 3.5,
-              cursor: "pointer",
-              boxShadow: `0 10px 36px ${status.color}50`,
-              transition: "all 0.3s ease",
-            }}
-          >
-            {status.cta}
-          </button>
-
-          {/* Red override */}
-          {status.grade === "red" && confirmed && (
+          <div style={{
+            display: "flex", alignItems: "center", gap: 20,
+            marginBottom: 20, opacity: 0,
+            animation: "bb-up 0.7s ease 0.25s forwards",
+          }}>
             <button
-              onClick={() => onContinue(value)}
+              onClick={() => setValue(v => Math.max(0, v - 1))}
               style={{
-                width: "100%", marginTop: 12, height: 44,
-                background: "transparent",
-                border: "1.5px solid rgba(255,255,255,0.1)",
-                borderRadius: 12,
-                color: "rgba(255,255,255,0.35)",
-                fontFamily: "'DM Mono', monospace",
-                fontSize: 10, letterSpacing: 2.5,
+                width: 44, height: 44, borderRadius: "50%",
+                background: "rgba(255,255,255,0.07)",
+                border: "1.5px solid rgba(255,255,255,0.12)",
+                color: "#fff", fontSize: 22, fontWeight: 300,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >−</button>
+
+            <input
+              type="number" min="0" max="100"
+              value={value}
+              onChange={e => {
+                const n = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
+                setValue(n);
+              }}
+              style={{
+                width: 88, textAlign: "center",
+                fontSize: 48, fontWeight: 800,
+                color: status.color,
+                fontFamily: "'Syne', sans-serif",
+                background: "transparent", border: "none", outline: "none",
+                transition: "color 0.3s ease",
+              }}
+            />
+
+            <button
+              onClick={() => setValue(v => Math.min(100, v + 1))}
+              style={{
+                width: 44, height: 44, borderRadius: "50%",
+                background: "rgba(255,255,255,0.07)",
+                border: "1.5px solid rgba(255,255,255,0.12)",
+                color: "#fff", fontSize: 22, fontWeight: 300,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >+</button>
+          </div>
+
+          <div style={{
+            width: "100%",
+            display: "flex", flexDirection: "column", gap: 6,
+            marginBottom: 20, opacity: 0,
+            animation: "bb-up 0.7s ease 0.35s forwards",
+          }}>
+            {TIERS.map(t => {
+              const active = status.grade === t.grade;
+              return (
+                <div key={t.grade} style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  padding: "10px 14px", borderRadius: 12,
+                  background: active ? `${t.color}18` : "rgba(255,255,255,0.03)",
+                  border: `1.5px solid ${active ? `${t.color}55` : "rgba(255,255,255,0.06)"}`,
+                  transition: "all 0.3s ease",
+                }}>
+                  <div style={{
+                    width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
+                    background: t.color,
+                    boxShadow: active ? `0 0 10px ${t.color}99` : "none",
+                    transition: "box-shadow 0.3s ease",
+                  }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      fontSize: 11, fontWeight: 700,
+                      fontFamily: "'Syne', sans-serif",
+                      color: active ? t.color : "rgba(255,255,255,0.45)",
+                      letterSpacing: 1.5,
+                      transition: "color 0.3s ease",
+                    }}>
+                      {t.label}
+                    </div>
+                    {active && (
+                      <div style={{
+                        fontSize: 10, fontFamily: "'DM Mono', monospace",
+                        color: "rgba(255,255,255,0.5)", marginTop: 2,
+                      }}>
+                        {t.sub}
+                      </div>
+                    )}
+                  </div>
+                  <div style={{
+                    fontSize: 9, fontFamily: "'DM Mono', monospace",
+                    color: active ? t.color : "rgba(255,255,255,0.25)",
+                    letterSpacing: 1,
+                  }}>
+                    {t.range}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{
+            width: "100%", opacity: 0,
+            animation: "bb-up 0.7s ease 0.5s forwards",
+          }}>
+            <button
+              onClick={handleCta}
+              style={{
+                width: "100%", height: 54,
+                background: status.go
+                  ? `linear-gradient(140deg, ${status.grade === "green" ? C.greenDeep : C.yellowDeep}, ${status.color})`
+                  : `linear-gradient(140deg, ${C.redDeep}, ${C.red})`,
+                border: "none", borderRadius: 16,
+                color: status.grade === "yellow" ? "#000" : "#fff",
+                fontFamily: "'Syne', sans-serif", fontWeight: 800,
+                fontSize: 13, letterSpacing: 3.5,
                 cursor: "pointer",
+                boxShadow: `0 10px 36px ${status.color}50`,
+                transition: "all 0.3s ease",
               }}
             >
-              OVERRIDE — PROCEED ANYWAY
+              {status.cta}
             </button>
-          )}
+
+            {status.grade === "red" && confirmed && (
+              <button
+                onClick={() => onContinue(value)}
+                style={{
+                  width: "100%", marginTop: 12, height: 44,
+                  background: "transparent",
+                  border: "1.5px solid rgba(255,255,255,0.1)",
+                  borderRadius: 12,
+                  color: "rgba(255,255,255,0.35)",
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: 10, letterSpacing: 2.5,
+                  cursor: "pointer",
+                }}
+              >
+                OVERRIDE — PROCEED ANYWAY
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </>
